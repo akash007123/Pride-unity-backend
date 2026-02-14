@@ -4,6 +4,9 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const contactRoutes = require('./routes/contactRoutes');
+const adminAuthRoutes = require('./routes/adminAuthRoutes');
+const communityRoutes = require('./routes/communityRoutes');
+const volunteerRoutes = require('./routes/volunteerRoutes');
 
 const app = express();
 
@@ -29,6 +32,9 @@ app.get('/api/health', (req, res) => {
 
 // Routes
 app.use('/api/contacts', contactRoutes);
+app.use('/api/auth', adminAuthRoutes);
+app.use('/api/community', communityRoutes);
+app.use('/api/volunteers', volunteerRoutes);
 
 // 404 handler
 app.use((req, res) => {
