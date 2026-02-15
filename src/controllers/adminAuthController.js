@@ -56,8 +56,8 @@ exports.register = async (req, res) => {
       username,
       mobile,
       password,
-      dateOfBirth,
-      gender,
+      dateOfBirth: dateOfBirth || null,
+      gender: gender || null,
       address: address || {},
       profilePic: profilePic || '',
       role: role || 'sub_admin' // Default role

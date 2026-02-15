@@ -45,12 +45,6 @@ router.post(
     body('confirmPassword')
       .custom((value, { req }) => value === req.body.password)
       .withMessage('Passwords do not match'),
-    body('dateOfBirth')
-      .isISO8601()
-      .withMessage('Please provide a valid date of birth'),
-    body('gender')
-      .isIn(['male', 'female', 'other', 'prefer_not_to_say'])
-      .withMessage('Please select a valid gender'),
     body('role')
       .optional()
       .isIn(['admin', 'sub_admin', 'manager'])

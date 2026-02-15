@@ -42,12 +42,10 @@ const adminSchema = new mongoose.Schema({
     select: false
   },
   dateOfBirth: {
-    type: Date,
-    required: [true, 'Date of birth is required']
+    type: Date
   },
   gender: {
     type: String,
-    required: [true, 'Gender is required'],
     enum: ['male', 'female', 'other', 'prefer_not_to_say']
   },
   address: {

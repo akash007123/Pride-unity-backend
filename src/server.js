@@ -7,6 +7,7 @@ const contactRoutes = require('./routes/contactRoutes');
 const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const communityRoutes = require('./routes/communityRoutes');
 const volunteerRoutes = require('./routes/volunteerRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/contacts', contactRoutes);
 app.use('/api/auth', adminAuthRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/volunteers', volunteerRoutes);
+app.use('/api/events', eventRoutes);
 
 // 404 handler
 app.use((req, res) => {
@@ -55,7 +57,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
