@@ -60,7 +60,7 @@ exports.register = async (req, res) => {
       gender: gender || null,
       address: address || {},
       profilePic: profilePic || '',
-      role: role || 'sub_admin' // Default role
+      role: role || 'Member' // Default role
     });
 
     // Generate token
@@ -351,6 +351,28 @@ exports.changePassword = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error changing password'
+    });
+  }
+};
+
+// @desc    Get all admins
+// @route   GET /api/auth/admins
+// @access  Private (Admin only)
+exports.getAllAdmins = async (req, res) => {
+  try {
+    const admins = await Admin.find().select('-password').sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      data: {
+        admins
+      }
+    });
+  } catch (error) {
+    console.error('Get all admins error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching admins'
     });
   }
 };

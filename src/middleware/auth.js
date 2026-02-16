@@ -3,9 +3,10 @@ const Admin = require('../models/Admin');
 
 // Role hierarchy for permission checks
 const roleHierarchy = {
-  'admin': ['admin', 'sub_admin', 'manager'],
-  'sub_admin': ['sub_admin', 'manager'],
-  'manager': ['manager']
+  'Admin': ['Admin', 'Sub Admin', 'Volunteer', 'Member'],
+  'Sub Admin': ['Sub Admin', 'Volunteer', 'Member'],
+  'Volunteer': ['Volunteer', 'Member'],
+  'Member': ['Member']
 };
 
 // @desc    Protect routes - verify JWT token
@@ -140,7 +141,7 @@ exports.canAccessResource = (resourceOwnerField = 'createdBy') => {
       }
 
       // Admins can access any resource
-      if (req.admin.role === 'admin') {
+      if (req.admin.role === 'Admin') {
         return next();
       }
 

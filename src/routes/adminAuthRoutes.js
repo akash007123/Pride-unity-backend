@@ -7,7 +7,8 @@ const {
   getProfile,
   logout,
   updateProfile,
-  changePassword
+  changePassword,
+  getAllAdmins
 } = require('../controllers/adminAuthController');
 const { protect, authorize } = require('../middleware/auth');
 
@@ -47,7 +48,7 @@ router.post(
       .withMessage('Passwords do not match'),
     body('role')
       .optional()
-      .isIn(['admin', 'sub_admin', 'manager'])
+      .isIn(['Admin', 'Sub Admin', 'Volunteer', 'Member'])
       .withMessage('Invalid role')
   ],
   validate,
@@ -116,5 +117,10 @@ router.put(
 // @desc    Logout admin (for logging purposes)
 // @access  Private
 router.post('/logout', protect, logout);
+
+// @route   GET /api/auth/admins
+// @desc    Get all admins
+// @access  Private (Admin only)
+router.get('/admins', protect, authorize('Admin'), getAllAdmins);
 
 module.exports = router;
