@@ -376,3 +376,177 @@ exports.getAllAdmins = async (req, res) => {
     });
   }
 };
+
+// @desc    Get admin by ID
+// @route   GET /api/auth/admins/:id
+// @access  Private (Admin only)
+exports.getAdminById = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.params.id).select('-password');
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admin not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: { admin }
+    });
+  } catch (error) {
+    console.error('Get admin by ID error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching admin'
+    });
+  }
+};
+
+// @desc    Update admin
+// @route   PUT /api/auth/admins/:id
+// @access  Private (Admin only)
+exports.updateAdmin = async (req, res) => {
+  try {
+    const { name, mobile, role, isActive, newPassword } = req.body;
+
+    const admin = await Admin.findById(req.params.id);
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admin not found'
+      });
+    }
+
+    // Prevent self-deactivation
+    if (req.params.id === req.admin.id && isActive === false) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot deactivate your own account'
+      });
+    }
+
+    // Update fields
+    if (name) admin.name = name;
+    if (mobile) admin.mobile = mobile;
+    if (role) admin.role = role;
+    if (isActive !== undefined) admin.isActive = isActive;
+
+    // Handle profile picture upload
+    if (req.file) {
+      admin.profilePic = `/uploads/${req.file.filename}`;
+    }
+
+    // Handle password change
+    if (newPassword) {
+      if (newPassword.length < 8) {
+        return res.status(400).json({
+          success: false,
+          message: 'Password must be at least 8 characters'
+        });
+      }
+      admin.password = newPassword;
+    }
+
+    await admin.save();
+
+    res.json({
+      success: true,
+      message: 'Admin updated successfully',
+      data: { admin: admin.toObject() }
+    });
+  } catch (error) {
+    console.error('Update admin error:', error);
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({
+        success: false,
+        message: 'Validation error',
+        errors: messages
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: 'Server error updating admin'
+    });
+  }
+};
+
+// @desc    Toggle admin status (activate/deactivate)
+// @route   PUT /api/auth/admins/:id/toggle-status
+// @access  Private (Admin only)
+exports.toggleAdminStatus = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.params.id);
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admin not found'
+      });
+    }
+
+    // Prevent self-deactivation
+    if (req.params.id === req.admin.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot toggle your own status'
+      });
+    }
+
+    admin.isActive = !admin.isActive;
+    await admin.save();
+
+    res.json({
+      success: true,
+      message: admin.isActive ? 'Admin activated successfully' : 'Admin deactivated successfully',
+      data: { admin: admin.toObject() }
+    });
+  } catch (error) {
+    console.error('Toggle admin status error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error toggling admin status'
+    });
+  }
+};
+
+// @desc    Delete admin
+// @route   DELETE /api/auth/admins/:id
+// @access  Private (Admin only)
+exports.deleteAdmin = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.params.id);
+
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admin not found'
+      });
+    }
+
+    // Prevent self-deletion
+    if (req.params.id === req.admin.id) {
+      return res.status(400).json({
+        success: false,
+        message: 'You cannot delete your own account'
+      });
+    }
+
+    await Admin.findByIdAndDelete(req.params.id);
+
+    res.json({
+      success: true,
+      message: 'Admin deleted successfully'
+    });
+  } catch (error) {
+    console.error('Delete admin error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error deleting admin'
+    });
+  }
+};

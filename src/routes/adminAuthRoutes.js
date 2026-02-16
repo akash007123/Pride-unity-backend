@@ -8,9 +8,14 @@ const {
   logout,
   updateProfile,
   changePassword,
-  getAllAdmins
+  getAllAdmins,
+  getAdminById,
+  updateAdmin,
+  toggleAdminStatus,
+  deleteAdmin
 } = require('../controllers/adminAuthController');
 const { protect, authorize } = require('../middleware/auth');
+const upload = require('../middleware/upload');
 
 // Validation middleware
 const validate = (req, res, next) => {
@@ -122,5 +127,25 @@ router.post('/logout', protect, logout);
 // @desc    Get all admins
 // @access  Private (Admin only)
 router.get('/admins', protect, authorize('Admin'), getAllAdmins);
+
+// @route   GET /api/auth/admins/:id
+// @desc    Get admin by ID
+// @access  Private (Admin only)
+router.get('/admins/:id', protect, authorize('Admin'), getAdminById);
+
+// @route   PUT /api/auth/admins/:id
+// @desc    Update admin
+// @access  Private (Admin only)
+router.put('/admins/:id', protect, authorize('Admin'), upload.single('profilePic'), updateAdmin);
+
+// @route   PUT /api/auth/admins/:id/toggle-status
+// @desc    Toggle admin status
+// @access  Private (Admin only)
+router.put('/admins/:id/toggle-status', protect, authorize('Admin'), toggleAdminStatus);
+
+// @route   DELETE /api/auth/admins/:id
+// @desc    Delete admin
+// @access  Private (Admin only)
+router.delete('/admins/:id', protect, authorize('Admin'), deleteAdmin);
 
 module.exports = router;
