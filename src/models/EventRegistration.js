@@ -84,7 +84,6 @@ eventRegistrationSchema.pre('save', async function(next) {
 
 // Index for faster queries
 eventRegistrationSchema.index({ event: 1, email: 1 });
-eventRegistrationSchema.index({ ticketId: 1 });
 eventRegistrationSchema.index({ status: 1 });
 eventRegistrationSchema.index({ createdAt: -1 });
 

@@ -162,7 +162,6 @@ eventSchema.virtual('isSoldOut').get(function() {
 
 // Index for faster queries
 eventSchema.index({ status: 1, featured: -1, date: 1 });
-eventSchema.index({ slug: 1 });
 eventSchema.index({ tags: 1 });
 
 // Transform output
