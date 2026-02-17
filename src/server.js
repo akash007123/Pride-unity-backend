@@ -9,6 +9,8 @@ const adminAuthRoutes = require('./routes/adminAuthRoutes');
 const communityRoutes = require('./routes/communityRoutes');
 const volunteerRoutes = require('./routes/volunteerRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const reportRoutes = require('./routes/reportRoutes');
+const settingsRoutes = require('./routes/settingsRoutes');
 
 const app = express();
 
@@ -41,6 +43,8 @@ app.use('/api/auth', adminAuthRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/volunteers', volunteerRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // 404 handler
 app.use((req, res) => {
